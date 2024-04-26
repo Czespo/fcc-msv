@@ -56,8 +56,7 @@ return function (App $app)
             {
                 $urls = [
                     'original_url' => $body['url'],
-                    'short_url' => $short,
-                    'full_short_url' => $request->getUri() . "/$short"
+                    'short_url' => $short
                 ];
     
                 $response->getBody()->write(json_encode($urls, JSON_UNESCAPED_SLASHES));

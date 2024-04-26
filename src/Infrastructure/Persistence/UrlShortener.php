@@ -52,7 +52,7 @@ class UrlShortener
      * Adds URL to the database and returns the short ID.
      * 
      * @param string $url
-     * @return string|bool
+     * @return int|bool
      */
     public function add(string $url)
     {
@@ -91,7 +91,7 @@ class UrlShortener
         $stmt = $this->db->prepare("UPDATE $this->meta_table SET `next_index` = ?");
         $stmt->execute([$next_index]);
 
-        return "$short";
+        return $short;
     }
 
     /**
