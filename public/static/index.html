@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <title>FCC-MSV</title>
+
+        <link href="/fcc-msv/public/static/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <h1>FCC-MSV</h1>
+
+        <form action="/fcc-msv/api/shorturl" method="post">
+            <fieldset>
+                <legend>URL Shortener</legend>
+                <label for="urls-full-url">URL:</label>
+                <input type="text" id="urls-full-url" name="url">
+                <input type="submit" value="Submit">
+            </fieldset>
+        </form>
+    </body>
+</html>

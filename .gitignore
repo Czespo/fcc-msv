@@ -5,3 +5,5 @@
 /logs/*
 !/logs/README.md
 .phpunit.result.cache
+*.ps1
+*.sh
