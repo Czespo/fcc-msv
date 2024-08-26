@@ -12,9 +12,6 @@ use Slim\Factory\ServerRequestCreatorFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// Include private configuration.
-global $private_config;
-$private_config = include(__DIR__ . '/../private/config.php');
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
@@ -53,6 +50,7 @@ $routes = require __DIR__ . '/../app/routes.php';
 $routes($app);
 
 /** @var SettingsInterface $settings */
+global $settings;
 $settings = $container->get(SettingsInterface::class);
 
 $displayErrorDetails = $settings->get('displayErrorDetails');

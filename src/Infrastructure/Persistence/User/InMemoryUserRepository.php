@@ -21,8 +21,19 @@ class InMemoryUserRepository implements UserRepository
     public function __construct(array $users = null)
     {
         $this->users = $users ?? [
-            1 => new User(1, 'admin', 'admin', '')
+            0 => new User(0, 'admin')
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addUser(string $username): ?User
+    {
+        $user = new User(count($this->users), $username);
+        array_push($this->users, $user);
+        
+        return $user;
     }
 
     /**

@@ -14,18 +14,20 @@ return function (ContainerBuilder $containerBuilder)
     [
         SettingsInterface::class => function ()
         {
-            return new Settings(
-            [
+            // Include private configuration.
+            $private_config = include(__DIR__ . '/../private/config.php');
+            $settings = [
                 'displayErrorDetails' => true, // Should be set to false in production
                 'logError'            => true,
                 'logErrorDetails'     => true,
-                'logger' =>
-                [
+                'logger' => [
                     'name' => 'fcc-msv',
                     'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
                     'level' => Logger::DEBUG
                 ]
-            ]);
+            ];
+
+            return new Settings($private_config + $settings);
         }
     ]);
 };

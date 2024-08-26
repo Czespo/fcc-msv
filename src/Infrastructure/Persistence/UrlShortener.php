@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
 
+use App\Application\Settings\SettingsInterface;
+
 /**
  * Requires some values to be set in /private/config.php
  * 
- *  urls_host        - Hostname of database server.
- *  urls_username    - Database user.
- *  urls_password    - Database password.
- *  urls_dbname      - Database name.
- *  urls_meta_table  - Database table for storing next_index and max_index.
- *  urls_links_table - Database table for storing full URLs and their shortened versions.
+ *  db_host      - Hostname of database server.
+ *  db_name      - Database name.
+ *  db_username  - Database user.
+ *  db_password  - Database password.
  * 
  * Also, the database tables must be set up beforehand.
  * The meta table:
@@ -28,24 +28,24 @@ namespace App\Infrastructure\Persistence;
 class UrlShortener
 {
     private $db;
-    private $meta_table;
-    private $links_table;
+    private $meta_table = 'fccmsv_urls_meta';
+    private $links_table = 'fccmsv_urls_links';
 
     public function __construct()
     {
-        global $private_config;
+        // TODO: ???
+        global $settings;
+        // ???
 
-        $host = $private_config['urls_host'];
-        $dbname = $private_config['urls_dbname'];
+        $dbs = $settings->require('database');
+        $host = $dbs['db_host'];
+        $name = $dbs['db_name'];
 
         $this->db = new \PDO(
-            "mysql:host=$host;dbname=$dbname",
-            $private_config['urls_username'],
-            $private_config['urls_password']
+            "mysql:host=$host;dbname=$name",
+            $dbs['db_username'],
+            $dbs['db_password']
         );
-
-        $this->meta_table = $private_config['urls_meta_table'];
-        $this->links_table = $private_config['urls_links_table'];
     }
 
     /**

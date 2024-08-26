@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Application\Actions\User\CreateUserAction;
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
+use App\Application\Actions\User\ViewUserLogsAction;
+use App\Application\Actions\User\CreateExerciseAction;
+
 use App\Infrastructure\Persistence\UrlShortener;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -25,24 +29,37 @@ return function (App $app)
         return $response;
     });
 
-    $app->group('/users', function (Group $group)
+    // U S E R S //
+    // ========= //
+
+    $app->group('/api/users', function (Group $group)
     {
+        $group->post('', CreateUserAction::class);
         $group->get('', ListUsersAction::class);
         $group->get('/{id}', ViewUserAction::class);
+        $group->get('/{id}/logs', ViewUserLogsAction::class);
+
+        $group->post('/{id}/exercises', CreateExerciseAction::class);
     });
+
+    // W H O A M I //
+    // =========== //
 
     $app->get('/api/whoami', function (Request $request, Response $response)
     {
         $headers = [
             'ipaddress' => $request->getServerParams()['REMOTE_ADDR'],
-            'language' => $request->getHeaderLine("Accept-Language"),
-            'software' => $request->getHeaderLine("User-Agent")
+            'language' => $request->getHeaderLine('Accept-Language'),
+            'software' => $request->getHeaderLine('User-Agent')
         ];
 
-        $response = $response->withHeader("Content-Type", "application/json");
+        $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($headers, JSON_UNESCAPED_SLASHES));
         return $response;
     });
+
+    // T I M E S T A M P //
+    // ================= //
 
     $app->get('/date/api/{timestamp:\d+}', function (Request $request, Response $response, array $args)
     {
@@ -53,7 +70,7 @@ return function (App $app)
             'utc' => date('D, d M Y H:i:s', intval($timestamp / 1000)) . ' GMT'
         ];
 
-        $response = $response->withHeader("Content-Type", "application/json");
+        $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($body, JSON_UNESCAPED_SLASHES));
         return $response;
     });
@@ -61,7 +78,7 @@ return function (App $app)
     // .* pattern to allow forward slashes.
     $app->get('/date/api[/{date:.*}]', function (Request $request, Response $response, array $args)
     {
-        $response = $response->withHeader("Content-Type", "application/json");
+        $response = $response->withHeader('Content-Type', 'application/json');
         if (!empty($args['date']))
         {
             try
@@ -90,12 +107,15 @@ return function (App $app)
         return $response;
     });
 
+    // U R L  S H O R T E N E R //
+    // ======================== //
+
     $app->post('/api/shorturl', function (Request $request, Response $response)
     {
         $body = $request->getParsedBody();
         if (!empty($body['url']))
         {
-            $response = $response->withHeader("Content-Type", "application/json");
+            $response = $response->withHeader('Content-Type', 'application/json');
             $urlshortener = new UrlShortener();
             $short = $urlshortener->add($body['url']);
             if (!empty($short))
@@ -125,7 +145,7 @@ return function (App $app)
     {
         if (!empty($args['short']))
         {
-            $urlshortener = new UrlShortener($_SERVER['SERVER_NAME']);
+            $urlshortener = new UrlShortener();
             $full = $urlshortener->get($args['short']);
             if (!empty($full))
             {

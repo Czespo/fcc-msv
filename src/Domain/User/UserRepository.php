@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
+use App\Domain\User\User;
+
 interface UserRepository
 {
+    /**
+     * @param string $username
+     * @return User
+     */
+    public function add(string $username): ?User;
+
     /**
      * @return User[]
      */

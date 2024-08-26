@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpInternalServerErrorException;
 
 abstract class Action
 {
@@ -29,6 +30,7 @@ abstract class Action
     /**
      * @throws HttpNotFoundException
      * @throws HttpBadRequestException
+     * @throws HttpInternalServerErrorException
      */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
@@ -36,9 +38,12 @@ abstract class Action
         $this->response = $response;
         $this->args = $args;
 
-        try {
+        try
+        {
             return $this->action();
-        } catch (DomainRecordNotFoundException $e) {
+        }
+        catch (DomainRecordNotFoundException $e)
+        {
             throw new HttpNotFoundException($this->request, $e->getMessage());
         }
     }
@@ -46,6 +51,7 @@ abstract class Action
     /**
      * @throws DomainRecordNotFoundException
      * @throws HttpBadRequestException
+     * @throws HttpInternalServerErrorException
      */
     abstract protected function action(): Response;
 
@@ -63,7 +69,8 @@ abstract class Action
      */
     protected function resolveArg(string $name)
     {
-        if (!isset($this->args[$name])) {
+        if (!isset($this->args[$name]))
+        {
             throw new HttpBadRequestException($this->request, "Could not resolve argument `{$name}`.");
         }
 
@@ -73,20 +80,20 @@ abstract class Action
     /**
      * @param array|object|null $data
      */
-    protected function respondWithData($data = null, int $statusCode = 200): Response
+    protected function respondWithData($data = null, int $statusCode = 200, bool $bare = true): Response
     {
-        $payload = new ActionPayload($statusCode, $data);
+        $payload = new ActionPayload($statusCode, $data, bare: $bare);
 
         return $this->respond($payload);
     }
 
     protected function respond(ActionPayload $payload): Response
     {
-        $json = json_encode($payload, JSON_PRETTY_PRINT);
+        $json = json_encode($payload);
         $this->response->getBody()->write($json);
 
         return $this->response
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withStatus($payload->getStatusCode());
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($payload->getStatusCode());
     }
 }

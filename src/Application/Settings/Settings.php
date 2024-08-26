@@ -14,10 +14,23 @@ class Settings implements SettingsInterface
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function get(string $key = '')
     {
         return (empty($key)) ? $this->settings : $this->settings[$key];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function require(string $key)
+    {
+        if (array_key_exists($key, $this->settings))
+        {
+            return $this->settings[$key];
+        }
+
+        throw new Exception("Required key `$key` does not exist!");
     }
 }

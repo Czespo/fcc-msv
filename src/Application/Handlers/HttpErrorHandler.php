@@ -13,6 +13,7 @@ use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Throwable;
@@ -35,17 +36,28 @@ class HttpErrorHandler extends SlimErrorHandler
             $statusCode = $exception->getCode();
             $error->setDescription($exception->getMessage());
 
-            if ($exception instanceof HttpNotFoundException) {
+            if ($exception instanceof HttpNotFoundException)
+            {
                 $error->setType(ActionError::RESOURCE_NOT_FOUND);
-            } elseif ($exception instanceof HttpMethodNotAllowedException) {
+            }
+            elseif ($exception instanceof HttpMethodNotAllowedException)
+            {
                 $error->setType(ActionError::NOT_ALLOWED);
-            } elseif ($exception instanceof HttpUnauthorizedException) {
+            }
+            elseif ($exception instanceof HttpUnauthorizedException)
+            {
                 $error->setType(ActionError::UNAUTHENTICATED);
-            } elseif ($exception instanceof HttpForbiddenException) {
+            }
+            elseif ($exception instanceof HttpForbiddenException)
+            {
                 $error->setType(ActionError::INSUFFICIENT_PRIVILEGES);
-            } elseif ($exception instanceof HttpBadRequestException) {
+            }
+            elseif ($exception instanceof HttpBadRequestException)
+            {
                 $error->setType(ActionError::BAD_REQUEST);
-            } elseif ($exception instanceof HttpNotImplementedException) {
+            }
+            elseif ($exception instanceof HttpNotImplementedException)
+            {
                 $error->setType(ActionError::NOT_IMPLEMENTED);
             }
         }
