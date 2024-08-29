@@ -7,6 +7,6 @@ deny from all
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteRule (^$) public/static/index.html [L,NC]
+  RewriteRule (^$) public/static/index.html [L]
   RewriteRule (.+) public/$1 [L]
 </IfModule>

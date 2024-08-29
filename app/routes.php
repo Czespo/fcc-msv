@@ -10,9 +10,9 @@ use App\Application\Actions\User\CreateExerciseAction;
 
 use App\Infrastructure\Persistence\UrlShortener;
 
+use Slim\App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 return function (App $app)
@@ -23,9 +23,20 @@ return function (App $app)
         return $response;
     });
 
-    $app->get('/', function (Request $request, Response $response)
+    // M E T A D A T A //
+    // =============== //
+
+    $app->post('/api/fileanalyse', function (Request $request, Response $response)
     {
-        $response->getBody()->write('Hello world!');
+        $file = $_FILES["upfile"];
+        $body = [
+            'name' => $file['name'],
+            'type' => $file['type'],
+            'size' => $file['size']
+        ];
+
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($body, JSON_UNESCAPED_SLASHES));
         return $response;
     });
 

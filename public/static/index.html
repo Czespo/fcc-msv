@@ -11,12 +11,24 @@
     <body>
         <h1>FCC-MSV</h1>
 
+        <h2>URL Shortener Microservice</h2>
+
         <form action="/fcc-msv/api/shorturl" method="post">
             <fieldset>
                 <legend>URL Shortener</legend>
                 <label for="urls-full-url">URL:</label>
                 <input type="text" id="urls-full-url" name="url">
                 <input type="submit" value="Submit">
+            </fieldset>
+        </form>
+
+        <h2>File Metadata Microservice</h2>
+
+        <form action="/fcc-msv/api/fileanalyse" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>File Metadata</legend>
+                <input type="file" name="upfile">
+                <input type="submit" value="Upload">
             </fieldset>
         </form>
     </body>
